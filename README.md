@@ -1,2 +1,2 @@
 # DOCUMENTOS GOB COL
-### - PERMISOS PERSONALES
+### - PERMISOS PERSONALES [ [CODE](https://github.com/xmalmorthen/documentosGob/tree/develop/permisosPersonales) | [PAGE](https://github.com/xmalmorthen/documentosGob/tree/deploy/permisosPersonales) ]
