@@ -1,0 +1,185 @@
+<div class="container-fluid d-flex align-items-center h-100">
+
+    <div *ngIf="!showPreview" class="w-100 my-2 pt-md-0">
+        <h1 class="border-bottom border-white"><i class="fa fa-id-card-o pr-2" aria-hidden="true"></i> Información del trabajador(a)</h1>        
+        <div class="row ">
+            <div class="col-12 col-md-6 col-lg-3">
+                <h3 class="border-bottom border-white">Nombre</h3>
+                <p *ngIf="dataModel" class="h4">{{ dataModel.Persona.primerApellido }} {{ dataModel.Persona.segundoApellido }} {{ dataModel.Persona.nombres }}</p>
+                <p-skeleton *ngIf="!dataModel"></p-skeleton>
+            </div>
+            <div class="col-12 col-md-6 col-lg-2">
+                <h3 class="border-bottom border-white"># de control</h3>
+                <p *ngIf="dataModel" class="h4">{{ dataModel.noCtrl }}</p>
+                <p-skeleton *ngIf="!dataModel"></p-skeleton>
+            </div>
+            <div class="col-12 col-md-12 col-lg-7">
+                <h3 class="border-bottom border-white">Adscripción</h3>
+                <p *ngIf="issuingModel" class="h4">{{ issuingModel.nombre }}</p>
+                <p-skeleton *ngIf="!issuingModel"></p-skeleton>
+            </div>
+        </div>
+
+        <form #sectionContainer class="border rounded mt-3 p-2" autocomplete="off" [formGroup]="frmgp" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+                <div class="form-group col-12 m-0">
+                    <h1 class="m-0"><i class="fa fa-file-text-o pr-2" aria-hidden="true"></i> Formato</h1>                    
+                    <hr class="border-white m-0">
+                    <span class="text-danger float-right"><i class="fa fa-asterisk" aria-hidden="true"></i> campo requerido</span>
+                </div>
+
+                <!-- <p-messages *ngIf="formModule.formSubmitted && formModule.withErr" class="form-group col-12"></p-messages> -->
+
+                <div class="form-group col-md-12 col-lg-4 col-xl-3">
+                    <h3 class="requiredAsteriskLabel" >Fecha de elaboración</h3>
+                    <p-calendar 
+                        class="wth100" 
+                        [appendTo]="sectionContainer" 
+                        dateFormat="dd/mm/yy" 
+                        [disabledDays]="[0,6]" 
+                        [readonlyInput]="true" 
+                        formControlName="fechaElaboracion"></p-calendar>                    
+                    <div *ngIf="formModule.formSubmitted && f.fechaElaboracion.invalid" class="err pt-2 h4 text-danger font-weight-bold">
+                        <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                        <span *ngIf="f.fechaElaboracion.errors?.required">Información requerida</span>
+                    </div>
+                </div>
+                <div class="form-group col">
+                    <h3 class="requiredAsteriskLabel" >Tipo de permiso</h3>
+                    
+                    <p-dropdown 
+                        formControlName="tipoPermiso" 
+                        [options]="tipoPermisos" 
+                        placeholder="Favor de seleccionar" 
+                        optionLabel="value" 
+                        ></p-dropdown>
+                    <div *ngIf="formModule.formSubmitted && f.tipoPermiso.invalid" class="err pt-2 h4 text-danger font-weight-bold">
+                        <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                        <span *ngIf="f.tipoPermiso.errors?.required">Información requerida</span>
+                    </div>
+                    <div *ngIf="especifiqueSectionShow" class="pt-2" >
+                        <h5 class="m-0 p-0" >Especifique</h5>
+                        <textarea pInputTextarea formControlName="especifique" rows="2" class="especifiqueTextArea w-100" [maxlength]="especifiqueMaxLength"></textarea>
+                        <span *ngIf=" especifiqueMaxLength - f.especifique.value.length >= 0" class="float-right h5" style="line-height: 6px;">{{ especifiqueMaxLength - f.especifique.value.length }} caracteres restantes</span>
+                        
+                        <div *ngIf="formModule.formSubmitted && f.especifique.invalid" class="err pt-2 h4 text-danger font-weight-bold">
+                            <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                            <span *ngIf="f.especifique.errors?.required">Información requerida</span>
+                        </div>
+                    </div>
+
+                </div>   
+                <div class="w-100"></div>
+
+                <div 
+                    class="form-group" 
+                    [ngClass]="{'col-md-12 col-lg-4 col-xl-3': horarioJistificacionSectionShow, 'col': !horarioJistificacionSectionShow}">
+                    <h3 class="requiredAsteriskLabel" >Fecha(s) del permiso</h3>
+                    <p-calendar 
+                        class="wth100" 
+                        [appendTo]="sectionContainer" 
+                        dateFormat="dd/mm/yy" 
+                        [disabledDays]="[0,6]" 
+                        [disabledDates]="disabledDates" 
+                        [rangeSeparator]="'al'"
+                        [readonlyInput]="true"
+                        selectionMode="range" 
+                        formControlName="fechaPermiso"></p-calendar>
+                    <span *ngIf="fechaPermisoCantidadDias" class="float-right h5" style="line-height: 22px;">{{ fechaPermisoCantidadDias }} días</span>
+                    <div *ngIf="formModule.formSubmitted && f.fechaPermiso.invalid" class="err pt-2 h4 text-danger font-weight-bold">
+                        <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                        <span *ngIf="f.fechaPermiso.errors?.required">Información requerida</span>
+                        <span *ngIf="f.fechaPermiso.errors?.range">Debe especificar un rango de fechas</span>
+                    </div>
+                </div>
+                <div *ngIf="horarioJistificacionSectionShow" class="form-group col">
+                    <h3 class="requiredAsteriskLabel" >Horario de justificación </h3>
+                    <div class="d-flex justify-content-around">
+                        <div class="w-100 mr-1">
+                            <p-calendar 
+                                id="fromCalendar"
+                                class="wth100" 
+                                [timeOnly]="true" 
+                                hourFormat="12" 
+                                [appendTo]="sectionContainer"
+                                [keepInvalid]= 'true'
+                                placeholder="Desde"
+                                [(ngModel)]="fromHour"
+                                [ngModelOptions]="{standalone: true}"
+                                (ngModelChange)="fromToHoursChange()"
+                            ></p-calendar>                            
+                            <div *ngIf="formModule.formSubmitted && f.horario.errors?.fromRequired" class="err pt-2 h4 text-danger font-weight-bold">
+                                <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                                <span *ngIf="f.horario.errors?.fromRequired">Debe especificar la hora</span>
+                                <span *ngIf="f.horario.errors?.fromFormat">Formato de hora incorrecta</span>
+                            </div>
+                            <div *ngIf="formModule.formSubmitted && fromHour === null" class="err pt-2 h4 text-danger font-weight-bold">
+                                <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                                <span>Formato de hora incorrecta</span>
+                            </div>
+                        </div>
+                        <div class="w-100 ml-1">
+                            <p-calendar 
+                            id="toCalendar"
+                            class="wth100" 
+                            [timeOnly]="true" 
+                            hourFormat="12" 
+                            [appendTo]="sectionContainer"                            
+                            [keepInvalid]= 'true'
+                            placeholder="Hasta"
+                            [(ngModel)]="toHour" 
+                            [ngModelOptions]="{standalone: true}"
+                            (ngModelChange)="fromToHoursChange()"
+                            ></p-calendar>
+                            <div *ngIf="formModule.formSubmitted && f.horario.errors?.toRequired" class="err pt-2 h4 text-danger font-weight-bold">
+                                <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                                <span *ngIf="f.horario.errors?.toRequired">Debe especificar la hora</span>
+                                <span *ngIf="f.horario.errors?.toFormat">Formato de hora incorrecta</span>
+                            </div>
+                            <div *ngIf="formModule.formSubmitted && toHour === null" class="err pt-2 h4 text-danger font-weight-bold">
+                                <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                                <span>Formato de hora incorrecta</span>
+                            </div>
+                        </div>
+                    </div>
+                    <span *ngIf=" cantidadHoras > 0" class="float-right h5" style="line-height: 22px;">{{cantidadHoras}} hora(s)</span>
+                    <div *ngIf="formModule.formSubmitted && f.horario.errors?.required" class="err pt-2 h4 text-danger font-weight-bold">
+                        <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                        <span *ngIf="f.horario.errors?.required">Información requerida</span>
+                    </div>                    
+                </div>
+
+                <div class="form-group col-12">
+                    <h3 class="requiredAsteriskLabel" >Causa o motivo del permiso</h3>
+                    <textarea pInputTextarea formControlName="motivo" rows="2" class="especifiqueTextArea w-100" [maxlength]="motivoMaxLength"></textarea>
+                    <span *ngIf="motivoMaxLength - f.motivo.value.length >= 0" class="float-right h5" style="line-height: 6px;">{{ motivoMaxLength - f.motivo.value.length }} caracteres restantes</span>
+                    <div *ngIf="formModule.formSubmitted && f.motivo.invalid" class="err pt-2 h4 text-danger font-weight-bold">
+                        <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+                        <span *ngIf="f.motivo.errors?.required">Información requerida</span>
+                    </div>
+                </div>
+
+                
+                <div class="form-group col-12 text-right">
+                    
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button *ngIf="!formModule.formSubmitting" type="submit" class="btn btn-success btn-lg"><i class="fa fa-check-circle-o pr-2" aria-hidden="true"></i> Generar formato </button>
+                        <button *ngIf="!formModule.formSubmitting" type="button" class="btn btn-warning btn-lg" (click)="gotoMain()" ><i class="fa fa-user-o pr-2" aria-hidden="true"></i> Identificarse </button>
+                        <button *ngIf="formModule.formSubmitting" disabled type="submit" class="btn btn-success btn-lg">
+                          <p-progressSpinner [style]="{width: '28px', height: '28px'}" class="pr-2"></p-progressSpinner> Generando formato...
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <app-format-preview
+        *ngIf="showPreview" 
+        class="w-100"
+        [infoModel]="formatoModel"
+        (backToEdit)=" showPreview = !$event "
+    ></app-format-preview>
+    
+</div>

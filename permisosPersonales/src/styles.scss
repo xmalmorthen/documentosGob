@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Smooch+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Smooch+Sans&display=swap');
+
+html,
+body {
+  height: 100%;
+  background-color: rgb(163, 163, 163)!important;
+  // font-family: 'Smooch Sans', sans-serif;
+  font-family: 'Amatic SC', cursive!important;
+  font-family: 'Smooch Sans', sans-serif!important;
+  font-size: 18px;
+}
+
+body {
+  color: #fff;  
+}
+
+.form-control {
+  font-size: 1.5rem!important;
+  line-height: 1.8!important;
+}
+
+.requiredAsteriskLabel::after {
+  font-family: "FontAwesome"; 
+  font-weight: 900; 
+  content: "\f069";
+  padding-left: 3px;
+  font-size: 12px;
+  vertical-align: super;
+  color: red;
+}
+
+@media print {
+  html, body {
+    margin: 0!important;
+    color: #000!important;
+    background-color: #fff!important;
+  }
+}

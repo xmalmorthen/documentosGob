@@ -1,0 +1,24 @@
+@import '../../../assets/styles/p-calendar.scss';
+@import '../../../assets/styles/p-dropdown.scss';
+
+input, textarea { 
+    text-transform: uppercase;
+}
+
+:host {
+
+    text-transform: uppercase;
+
+    ::ng-deep {
+        p-calendar.wth100 {
+
+            width: 100%!important;
+
+            span.p-calendar {
+                width: inherit!important;
+            }
+
+        } 
+    }
+    
+}

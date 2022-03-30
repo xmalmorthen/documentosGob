@@ -1,0 +1,43 @@
+<div class="container-fluid d-flex align-items-center h-100">
+    <form class="border rounded my-2 my-md-0 p-2" autocomplete="off" [formGroup]="frmgp" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+          <div class="form-group col-12">
+            <h1><i class="fa fa-user-circle-o pr-2" aria-hidden="true"></i> Favor de identificarse</h1>
+            <hr class="border-white m-0">
+            <span class="text-danger float-right"><i class="fa fa-asterisk" aria-hidden="true"></i> campo requerido</span>
+          </div>
+
+          <p-messages *ngIf="formModule.withErr" class="form-group col-12"></p-messages>
+          
+          <div class="form-group col-12">
+            <h3 class="requiredAsteriskLabel" >CURP ó RFC</h3>
+            <input type="text" class="form-control" minlength="13" maxlength="18" formControlName="curpRfc" [ngClass]="{'border border-danger': formModule.formSubmitted  && f.curpRfc.invalid}" autofocus>
+            <div *ngIf="formModule.formSubmitted && f.curpRfc.invalid" class="err pt-2 h5 text-danger font-weight-bold">
+              <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+              <span *ngIf="f.curpRfc.errors?.required">Información requerida</span>
+              <span *ngIf="f.curpRfc.errors?.minlength">Debe especificar al menos 13 dígitos</span>
+            </div>
+          </div>          
+          <div class="form-group col-12">
+            <h3 class="requiredAsteriskLabel" ># de Empleado</h3>
+            <input type="text" class="form-control" minlength="4" maxlength="5" formControlName="noCtrl" [ngClass]="{'border border-danger': formModule.formSubmitted  && f.noCtrl.invalid}">
+            <div *ngIf="formModule.formSubmitted && f.noCtrl.invalid" class="err  pt-2 h5 text-danger font-weight-bold ">
+              <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
+              <span *ngIf="f.noCtrl.errors?.required">Información requerida</span>
+              <span *ngIf="f.noCtrl.errors?.minlength">Debe especificar al menos 4 dígitos</span>
+            </div>
+          </div>          
+          <div class="form-group col-12 d-flex justify-content-between">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="chkRemember" formControlName="remember">
+              <label class="custom-control-label" for="chkRemember">Recordar información</label>
+            </div>
+            <button *ngIf="!formModule.formSubmitting" type="submit" class="btn btn-success btn-lg"><i class="fa fa-check-circle-o pr-2" aria-hidden="true"></i> Identificarme </button>
+            <button *ngIf="formModule.formSubmitting" disabled type="submit" class="btn btn-success btn-lg">
+              <p-progressSpinner [style]="{width: '28px', height: '28px'}" class="pr-2"></p-progressSpinner> Procesando...
+            </button>
+          </div>
+        </div>        
+    </form>
+
+</div>

@@ -1,0 +1,27 @@
+:host ::ng-deep {
+    
+    p-dropdown {
+        div.p-dropdown {
+            width: 100%!important;
+            // height: 43px!important;
+        }
+
+    }
+    
+}
+
+@media screen and (max-width: 768px) {
+    :host ::ng-deep {
+
+
+        p-dropdown {
+            .p-dropdown .p-dropdown-panel {
+                min-width: 0%;
+                width: 100%!important;
+            }
+        }
+
+        
+    }
+
+}

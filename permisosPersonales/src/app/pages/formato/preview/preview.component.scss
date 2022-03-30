@@ -1,0 +1,236 @@
+$Color_b69664: #b69664;
+@media all {
+
+    :host{
+        font-size: .8rem;
+        line-height: .8rem;
+        text-transform: uppercase;
+    }
+
+    .border {
+        border: 1px solid black!important;
+    }
+
+    .bt {
+        border-top: 1px solid black!important;
+    }
+
+    .bb {
+        border-bottom: 1px solid black!important;
+    }
+
+    .bl {
+        border-left: 1px solid black!important;
+    }
+
+    .br {
+        border-right: 1px solid black!important;
+    }
+
+    .row.table{
+        border: 1px solid black!important;
+
+        .title{
+            min-height: 55px;
+            background-color: rgb(197, 197, 197);
+            // text-align: right;
+            font-weight: bold;
+        }
+
+        .data{
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+            font-weight: bold;
+            font-size: 1.3rem;
+            line-height: 1.2rem;
+            word-break: break-word;
+            padding-right: .2rem;
+        }
+    }
+
+    .a4Container{
+        width:25cm!important;
+        color: black;
+        
+        .htmlScreen{
+            background-color: white;
+            
+            .border-left{
+                border-left: 5px solid $Color_b69664 !important;
+            }
+
+            .header {
+                img {
+                    width: calc(100% - 2rem);
+                }
+            }
+
+            .titleStyle {
+                font-size: calc(100% + 2.3rem);
+                color: $Color_b69664;
+                font-weight: bold;
+                line-height: calc(100%);
+            }
+
+        }
+    }
+
+    @media (max-width: 1220px) {
+        .a4Container{
+            width: inherit !important;
+        }
+    }
+
+}
+
+@media screen {
+
+    .htmlPrint{
+        display: none!important;
+    }
+
+    @media (max-width: 885px) {
+
+        :host{
+            font-size: .6rem!important;
+            line-height: .6rem!important;
+
+        }
+
+        .row.table{
+            .data{
+                font-size: 1rem;
+                line-height: .9rem;
+            }
+        }
+
+        .a4Container{
+            .htmlScreen{
+                .titleStyle {
+                    font-size: calc(100% + 1.8rem);
+                }
+            }
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        :host{
+            font-size: .8rem!important;
+            line-height: .8rem!important;
+        }
+
+        .br {
+            border-right: none!important;
+        }
+
+        .bl {
+            border-left: none!important;
+        }
+
+        .row.table{
+            .title{
+                min-height: unset!important;
+                display: block !important;
+            }
+            .col-12 {
+                padding: 5px 5px;
+            }
+            .data{
+                position: relative;
+                top: unset!important;
+                -ms-transform: unset!important;
+                transform: unset!important;
+                padding-right: unset!important;
+            }
+        }
+
+        .a4Container{
+            .htmlScreen{
+
+                .border-left{
+                    border-left: none!important;
+                }
+
+                .header {
+                    img {
+                        width: calc(50% - 2rem);
+                    }
+                }
+    
+                .titleStyle {
+                    font-size: calc(100% + 2rem);
+                }
+
+                .causaSection{
+                    border-top: none!important;
+                }
+
+            }
+        }
+    }
+}
+
+@media print {        
+    
+    @page{
+        size: A4 portrait;
+        margin: 1.2cm 0cm;
+    }
+    
+    .border {
+        border: none!important;
+    }
+
+    .btns, .htmlScreen{
+        display: none;
+    }
+
+    .repSeccion {
+        display: block!important;
+    }
+
+    .row.table{
+
+        .title{
+            min-height: 50px;
+        }
+    }
+
+
+    .a4Container {
+        margin: 0!important;
+        padding: 0!important;
+        
+        .htmlPrint{
+
+            .border-left{
+                border-left: 5px solid $Color_b69664 !important;
+                padding: 1.1rem 0!important;
+            }
+
+            .header {
+                img {
+                    width: 18rem;
+                }
+
+                .title{
+                    // text-align: justify!important;
+
+                    .titleStyle {
+                        font-size: 3rem;
+                        color: $Color_b69664;
+                        font-weight: bold;
+                        line-height: 43px;
+                    }
+
+                }
+            }
+            
+        }
+
+    }
+}
