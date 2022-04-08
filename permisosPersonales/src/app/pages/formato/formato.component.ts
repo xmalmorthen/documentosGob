@@ -79,7 +79,7 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
       fechaElaboracion: [ new Date(), [ Validators.required ]],
       tipoPermiso: [ null, [ Validators.required ]],
       especifique: [ '', [ Validators.maxLength( this.especifiqueMaxLength ) ]],
-      fechaPermiso: [ [ new Date() ], [ Validators.required ]],
+      fechaPermiso: [ [ new Date(), null ], [ Validators.required ]],
       horario: [ [], []],
       motivo: [ '', [ Validators.required, Validators.maxLength( this.motivoMaxLength ) ] ],
     });
@@ -120,30 +120,28 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const _this = this;
     $('#fromCalendar input').on('blur', function(this: any){
-      if (!_this.f.errors) {
-        try {
-          _this.fromHour = _this.parseTimes($(this).val()).locale('es').toDate();
-        } catch (error) {
-          _this.fromHour = null;
-        }
+      try {
+        _this.fromHour = _this.parseTimes($(this).val()).locale('es').toDate();
+        _this.f.horario.setErrors({});
+      } catch (error) {
+        _this.fromHour = null;
       }
     });
 
     $('#toCalendar input').on('blur', function(this: any){
-      if (!_this.f.errors){
-        try {
-          _this.toHour = _this.parseTimes($(this).val()).locale('es').toDate();          
-        } catch (error) {
-          _this.toHour = null;
-        }
+      try {
+        _this.toHour = _this.parseTimes($(this).val()).locale('es').toDate();
+        _this.f.horario.setErrors({});
+      } catch (error) {
+        _this.toHour = null;        
       }
     });
 
   }
 
   private setDefaultHours(){
-    this.fromHour = moment().locale('es').toDate();
-    this.toHour = moment().locale('es').add(3,'hours').toDate();
+    this.fromHour = moment().locale('es').seconds(0).toDate();
+    this.toHour = moment().locale('es').seconds(0).add(3,'hours').toDate();
     this.fromToHoursChange();
   }
 
@@ -274,9 +272,13 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.formValidations();
 
+      this.formRestrictions();
+
       if (this.frmgp.valid) {
 
         this.formatoModel = this.formatoModelPopulate();
+
+        console.log(this.formatoModel);
         
         this.showPreview = true;
 
@@ -297,12 +299,10 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private populateNgModels(){
 
-    const fromToHours: (Date | string)[]  = [];
+    const fromToHours: (Date | string | null)[]  = [];
     
-    if (this.fromHour)
-      fromToHours.push(this.fromHour);
-    if (this.toHour)
-      fromToHours.push(this.toHour);
+    fromToHours.push(this.fromHour || null);
+    fromToHours.push(this.toHour || null);
 
     this.f.horario.setValue( fromToHours );
 
@@ -314,18 +314,41 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.especifiqueSectionShow && !this.f.especifique.value.toString())
       this.f.especifique.setErrors({ 'required': true });
 
-    const horario: string[] = this.f.horario.value;
-
-    if (!horario.length && (this.fromHour === undefined && this.toHour === undefined))
+    const horario: (Date | string | null)[] = this.f.horario.value;
+    const fechaPermiso: (Date | null)[] = this.f.fechaPermiso.value;
+    
+    if (!fechaPermiso[1] && ( !horario[0] && !horario[1] ))
       this.f.horario.setErrors({ 'required': true });
     else {
 
-      if (this.fromHour === undefined )
+      if (!horario[0] && !$('#fromCalendar input').val())
         this.f.horario.setErrors({ 'fromRequired': true });
-      if (this.toHour === undefined)
+      else if (!horario[0] && $('#fromCalendar input').val())
+        this.f.horario.setErrors({ 'fromFormat': true });
+      
+      if (!fechaPermiso[1] && !horario[1] && !$('#toCalendar input').val() )
         this.f.horario.setErrors({ 'toRequired': true });
+      else if (!fechaPermiso[1] && !horario[1] && $('#toCalendar input').val() )
+        this.f.horario.setErrors({ 'toFormat': true });
+
     }
 
+  }
+
+  private formRestrictions(){
+
+    const horario: (Date | string | null)[] = this.f.horario.value;
+
+    if ( horario[1] ){
+      const hr1: moment.Moment = moment(horario[0]),
+      hr2: moment.Moment = moment(horario[1]);
+
+      if ( hr2.diff(hr1,'seconds') + 1 <= 59)
+        this.f.horario.setErrors({ 'rangeErr': true });
+      else if ( hr2.diff(hr1,'minutes') + 1 < 30)
+        this.f.horario.setErrors({ 'range30min': true });
+
+    }
 
   }
 
@@ -339,10 +362,10 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
         tipoPermiso: this.f.tipoPermiso.value,
         especifique: this.f.especifique.value,
         fechaPermiso: this.f.fechaPermiso.value,
-        horario: this.f.fechaPermiso.value.length == 2 ? [] : this.f.horario.value,
+        horario: this.f.fechaPermiso.value[1] ? [] : this.f.horario.value,
         motivo: this.f.motivo.value,
         dias: this.fechaPermisoCantidadDias,
-        horas: this.f.fechaPermiso.value.length == 2 ? 0 : this.cantidadHoras
+        horas: this.f.fechaPermiso.value[1] ? 0 : this.cantidadHoras
       }
     }
 
@@ -417,7 +440,7 @@ export class FormatoComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (to && from) {
-      this.cantidadHoras = to.diff(from,'hours');
+      this.cantidadHoras = to.diff(from,'minutes');
     } else 
       this.cantidadHoras = 0;
 

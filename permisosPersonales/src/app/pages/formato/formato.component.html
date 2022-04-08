@@ -96,56 +96,54 @@
                     <h3 class="requiredAsteriskLabel" >Horario de justificación </h3>
                     <div class="d-flex justify-content-around">
                         <div class="w-100 mr-1">
-                            <p-calendar 
-                                id="fromCalendar"
-                                class="wth100" 
-                                [timeOnly]="true" 
-                                hourFormat="12" 
-                                [appendTo]="sectionContainer"
-                                [keepInvalid]= 'true'
-                                placeholder="Desde"
-                                [(ngModel)]="fromHour"
-                                [ngModelOptions]="{standalone: true}"
-                                (ngModelChange)="fromToHoursChange()"
-                            ></p-calendar>                            
-                            <div *ngIf="formModule.formSubmitted && f.horario.errors?.fromRequired" class="err pt-2 h4 text-danger font-weight-bold">
+                            <div class=" text-right">
+                                <span class="h6" style="display: block;margin-top: -30px;">DESDE</span>
+                                <p-calendar 
+                                    id="fromCalendar"
+                                    class="wth100" 
+                                    [timeOnly]="true" 
+                                    hourFormat="12" 
+                                    [appendTo]="sectionContainer"
+                                    [keepInvalid]= 'true'                                
+                                    [(ngModel)]="fromHour"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (ngModelChange)="fromToHoursChange()"
+                                ></p-calendar> 
+                            </div>                           
+                            <div *ngIf="formModule.formSubmitted && (f.horario.errors?.fromRequired || f.horario.errors?.fromFormat)" class="err pt-2 h4 text-danger font-weight-bold">
                                 <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
                                 <span *ngIf="f.horario.errors?.fromRequired">Debe especificar la hora</span>
                                 <span *ngIf="f.horario.errors?.fromFormat">Formato de hora incorrecta</span>
-                            </div>
-                            <div *ngIf="formModule.formSubmitted && fromHour === null" class="err pt-2 h4 text-danger font-weight-bold">
-                                <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
-                                <span>Formato de hora incorrecta</span>
-                            </div>
+                            </div>                            
                         </div>
                         <div class="w-100 ml-1">
-                            <p-calendar 
-                            id="toCalendar"
-                            class="wth100" 
-                            [timeOnly]="true" 
-                            hourFormat="12" 
-                            [appendTo]="sectionContainer"                            
-                            [keepInvalid]= 'true'
-                            placeholder="Hasta"
-                            [(ngModel)]="toHour" 
-                            [ngModelOptions]="{standalone: true}"
-                            (ngModelChange)="fromToHoursChange()"
-                            ></p-calendar>
-                            <div *ngIf="formModule.formSubmitted && f.horario.errors?.toRequired" class="err pt-2 h4 text-danger font-weight-bold">
+                            <div class="text-right">
+                                <span class="h6" style="display: block;margin-top: -30px;">HASTA</span>
+                                <p-calendar 
+                                id="toCalendar"
+                                class="wth100" 
+                                [timeOnly]="true" 
+                                hourFormat="12" 
+                                [appendTo]="sectionContainer"                            
+                                [keepInvalid]= 'true'                            
+                                [(ngModel)]="toHour" 
+                                [ngModelOptions]="{standalone: true}"
+                                (ngModelChange)="fromToHoursChange()"
+                                ></p-calendar>
+                            </div>
+                            <div *ngIf="formModule.formSubmitted && ( f.horario.errors?.toRequired || f.horario.errors?.toFormat )" class="err pt-2 h4 text-danger font-weight-bold">
                                 <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
                                 <span *ngIf="f.horario.errors?.toRequired">Debe especificar la hora</span>
                                 <span *ngIf="f.horario.errors?.toFormat">Formato de hora incorrecta</span>
-                            </div>
-                            <div *ngIf="formModule.formSubmitted && toHour === null" class="err pt-2 h4 text-danger font-weight-bold">
-                                <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
-                                <span>Formato de hora incorrecta</span>
-                            </div>
+                            </div>   
                         </div>
                     </div>
-                    <span *ngIf=" cantidadHoras > 0" class="float-right h5" style="line-height: 22px;">{{cantidadHoras}} hora(s)</span>
-                    <div *ngIf="formModule.formSubmitted && f.horario.errors?.required" class="err pt-2 h4 text-danger font-weight-bold">
+                    <span *ngIf=" cantidadHoras > 0" class="float-right h5" style="line-height: 22px;">{{cantidadHoras | horasTransform}}</span>
+                    <div *ngIf="formModule.formSubmitted && (f.horario.errors?.required || f.horario.errors?.rangeErr || f.horario.errors?.range30min)" class="err pt-2 h4 text-danger font-weight-bold">
                         <i class="fa fa-exclamation-triangle mr-2 animate__animated animate__flash" aria-hidden="true"></i>
                         <span *ngIf="f.horario.errors?.required">Información requerida</span>
+                        <span *ngIf="f.horario.errors?.rangeErr">La hora final no puede ser menor o igual que la hora inicial</span>
+                        <span *ngIf="f.horario.errors?.range30min">Solo se acepta mínimo 30 minutos</span>
                     </div>                    
                 </div>
 
